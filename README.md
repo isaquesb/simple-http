@@ -15,8 +15,8 @@ composer install
 ### Usage
 
 ```
-$request = new Request(self::$adapter);
-$response = $request->post('http://google.com', ['q' => 'Test POST']);
+$request = new \Simple\Http\Request\Request($adapter);
+$response = $request->post('http://localhost', ['q' => 'Test POST']);
 echo $response->getHttpStatus();
 echo $response->getRawBody();
 ```
