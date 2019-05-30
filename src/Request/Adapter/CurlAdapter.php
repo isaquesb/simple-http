@@ -57,27 +57,6 @@ class CurlAdapter implements AdapterInterface
     }
 
     /**
-     * @return ResponseInterface
-     */
-    public function getResponse()
-    {
-        return $this->response;
-    }
-
-    /**
-     * @param RequestInterface $request
-     * @return bool
-     */
-    public function dispatch(RequestInterface $request)
-    {
-        $response = $this->processRequest($request);
-        if ($response) {
-            $this->response = $response;
-        }
-        return $response;
-    }
-
-    /**
      * @param RequestInterface $request
      * @return array
      */
@@ -95,6 +74,9 @@ class CurlAdapter implements AdapterInterface
             $headers['Content-Type'] = 'application/x-www-form-urlencoded';
         }
         $headers['Content-Type'] .= '; charset=' . $request->getCharset();
+        if ($isPostOrPut) {
+            $headers['Content-Length'] = strlen($data);
+        }
         return $this->prepareHeaders($headers);
     }
 
@@ -139,6 +121,19 @@ class CurlAdapter implements AdapterInterface
     }
 
     /**
+     * @param RequestInterface $request
+     * @return bool
+     */
+    public function dispatch(RequestInterface $request)
+    {
+        $response = $this->processRequest($request);
+        if ($response) {
+            $this->response = $response;
+        }
+        return $response;
+    }
+
+    /**
      * @param int $status
      * @param string $body
      * @param int $errorNo
@@ -147,11 +142,13 @@ class CurlAdapter implements AdapterInterface
      */
     private function makeResponse($status, $body, $errorNo, $error)
     {
-        $errors = [];
+        $response = new Response();
+        $response->setRawBody($body);
+        $response->setHttpStatus($status);
         if (!empty($error)) {
-            $errors[$errorNo] = $error;
+            $errors = [$errorNo => $error];
+            $response->setErrors($errors);
         }
-        $response = new Response($status, $body, $errors);
         return $response;
     }
 
@@ -173,5 +170,13 @@ class CurlAdapter implements AdapterInterface
         $errorNo = curl_errno($resource);
         curl_close($resource);
         return $this->makeResponse($status, $body, $errorNo, $error);
+    }
+
+    /**
+     * @return ResponseInterface
+     */
+    public function getResponse()
+    {
+        return $this->response;
     }
 }

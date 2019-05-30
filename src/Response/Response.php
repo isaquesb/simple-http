@@ -22,13 +22,6 @@ class Response implements ResponseInterface
      */
     protected $errors = [];
 
-    public function __construct($httpStatus, $rawBody, array $errors = array())
-    {
-        $this->setHttpStatus($httpStatus);
-        $this->setRawBody($rawBody);
-        $this->setErrors($errors);
-    }
-
     /**
      * @return string
      */
@@ -57,7 +50,7 @@ class Response implements ResponseInterface
      * @param string $rawBody
      * @return ResponseInterface
      */
-    private function setRawBody($rawBody)
+    public function setRawBody($rawBody)
     {
         $this->rawBody = $rawBody;
         return $this;
@@ -67,7 +60,7 @@ class Response implements ResponseInterface
      * @param int $httpStatus
      * @return ResponseInterface
      */
-    private function setHttpStatus($httpStatus)
+    public function setHttpStatus($httpStatus)
     {
         $this->httpStatus = $httpStatus;
         return $this;
@@ -77,7 +70,7 @@ class Response implements ResponseInterface
      * @param array $errors
      * @return ResponseInterface
      */
-    private function setErrors(array $errors)
+    public function setErrors(array $errors)
     {
         $this->errors = $errors;
         return $this;
