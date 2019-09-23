@@ -1,7 +1,7 @@
 {
     "name": "isaquesb/simple-http",
     "description": "Simple Http Builder",
-    "license": "proprietary",
+    "license": "MIT",
     "authors": [
         {
             "name": "Isaque de Souza",
