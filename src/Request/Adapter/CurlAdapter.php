@@ -162,11 +162,11 @@ class CurlAdapter implements AdapterInterface
         $options = $this->getRequestDispatchOptions($request);
         curl_setopt_array($resource, $options);
         $body = curl_exec($resource);
-        $status =  (int) curl_getinfo($resource, CURLINFO_HTTP_CODE);
+        $status =  intval(curl_getinfo($resource, CURLINFO_HTTP_CODE));
         $error = curl_error($resource);
         $errorNo = curl_errno($resource);
         curl_close($resource);
-        if ($body === false) {
+        if (false === $body) {
             $status = 500;
             $body = null;
         }

@@ -10,6 +10,11 @@ use Simple\Http\Request\Adapter\AdapterInterface;
 class Request implements RequestInterface
 {
 
+    const GET = 'GET';
+    const POST = 'POST';
+    const PUT = 'PUT';
+    const DELETE = 'DELETE';
+
     /**
      * @var AdapterInterface
      */
@@ -224,6 +229,17 @@ class Request implements RequestInterface
     }
 
     /**
+     * @param $header
+     * @param $content
+     * @return RequestInterface
+     */
+    public function setHeader($header, $content)
+    {
+        $this->headers[$header] = $content;
+        return $this;
+    }
+
+    /**
      * @param string $name
      * @param array $arguments
      * @return bool|\Simple\Http\Response\ResponseInterface
@@ -241,7 +257,7 @@ class Request implements RequestInterface
         }
         $adapter = $this->getAdapter();
         if (is_null($adapter)) {
-            throw new \RuntimeException('Adapter is Required');
+            throw new \RuntimeException('Adapter is required');
         }
         return $adapter->dispatch($this) ? $adapter->getResponse() : false;
     }
@@ -254,7 +270,7 @@ class Request implements RequestInterface
     public function __call($name, $arguments)
     {
         $method = strtoupper($name);
-        if (in_array($method, ['GET', 'POST', 'PUT', 'DELETE'])) {
+        if (in_array($method, [self::GET, self::POST, self::PUT, self::DELETE])) {
             return $this->send($method, $arguments);
         }
         throw new \BadMethodCallException('Unsupported method: ' . $method);
