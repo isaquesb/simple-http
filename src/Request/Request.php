@@ -229,8 +229,8 @@ class Request implements RequestInterface
     }
 
     /**
-     * @param $header
-     * @param $content
+     * @param string $header
+     * @param string $content
      * @return RequestInterface
      */
     public function setHeader($header, $content)

@@ -83,4 +83,11 @@ interface RequestInterface
      * @return RequestInterface
      */
     public function setHeaders(array $headers);
+
+    /**
+     * @param string $header
+     * @param string $content
+     * @return RequestInterface
+     */
+    public function setHeader($header, $content);
 }
