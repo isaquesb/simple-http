@@ -67,13 +67,16 @@ class CurlAdapter implements AdapterInterface
         $data = $request->getData();
         $params = $request->getParams();
         $isPostOrPut = in_array($request->getMethod(), ['POST', 'PUT']);
-        if ($isPostOrPut && $params instanceof \JsonSerializable) {
-            $headers['Content-Type'] = 'application/json';
+        $hasCT = array_key_exists('Content-Type', $headers);
+        if (!$hasCT && $isPostOrPut && $params instanceof \JsonSerializable) {
+            $hasCT = $headers['Content-Type'] = 'application/json';
         }
-        if (!array_key_exists('Content-Type', $headers) || is_array($data)) {
+        if (!$hasCT && is_array($data) && $data) {
             $headers['Content-Type'] = 'application/x-www-form-urlencoded';
         }
-        $headers['Content-Type'] .= '; charset=' . $request->getCharset();
+        if ($hasCT && false === strpos($headers['Content-Type'], 'charset')) {
+            $headers['Content-Type'] .= '; charset=' . $request->getCharset();
+        }
         if ($isPostOrPut) {
             $headers['Content-Length'] = strlen($data);
         }
